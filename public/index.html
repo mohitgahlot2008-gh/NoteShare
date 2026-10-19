@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NoteShare - Share notes with your classmates</title>
+  <meta name="description" content="Upload, find and download class notes shared by students.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===== Top bar ===== -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="logo" href="#" aria-label="NoteShare home">📚 NoteShare</a>
+      <input id="searchInput" class="search" type="search"
+             placeholder="Search notes, subjects, tags..." aria-label="Search notes">
+      <nav class="actions">
+        <button id="uploadBtn" class="btn primary" type="button">+ Upload</button>
+        <span id="userName" class="user-name" hidden></span>
+        <button id="authBtn" class="btn" type="button">Log in</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="container">
+      <h1>Better notes, shared by students like you</h1>
+      <p>Find notes for any subject and semester, or upload your own to help a classmate.</p>
+    </div>
+  </section>
+
+  <!-- ===== Main content ===== -->
+  <main class="container">
+    <div class="tabs" role="tablist" aria-label="Note lists">
+      <button class="tab active" data-tab="all" role="tab" type="button">All notes</button>
+      <button class="tab" data-tab="mine" role="tab" type="button">My uploads</button>
+      <button class="tab" data-tab="saved" role="tab" type="button">Saved</button>
+    </div>
+
+    <div class="filters">
+      <label>Subject
+        <select id="subjectFilter"><option value="">All subjects</option></select>
+      </label>
+      <label>Semester
+        <select id="semesterFilter"><option value="">All semesters</option></select>
+      </label>
+      <label>Sort by
+        <select id="sortSelect">
+          <option value="newest">Newest</option>
+          <option value="votes">Most upvoted</option>
+          <option value="downloads">Most downloaded</option>
+        </select>
+      </label>
+    </div>
+
+    <p id="resultCount" class="muted" aria-live="polite"></p>
+    <div id="notesGrid" class="grid"></div>
+    <div id="emptyState" class="empty" hidden>
+      <p>No notes found.</p>
+      <p class="muted">Try different filters, or be the first to upload one.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="muted">Only upload your own notes or material you have permission to share. Use the report button to flag anything inappropriate.</p>
+    </div>
+  </footer>
+
+  <!-- ===== Auth dialog ===== -->
+  <dialog id="authDialog">
+    <form id="authForm" class="dialog-form" novalidate>
+      <h2 id="authTitle">Log in</h2>
+      <label id="nameRow" hidden>Full name
+        <input id="authName" type="text" autocomplete="name" maxlength="60">
+      </label>
+      <label>Email
+        <input id="authEmail" type="email" autocomplete="email" required>
+      </label>
+      <label>Password
+        <input id="authPassword" type="password" autocomplete="current-password" minlength="8" required>
+      </label>
+      <p id="authError" class="error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="authCancel">Cancel</button>
+        <button type="submit" class="btn primary" id="authSubmit">Log in</button>
+      </div>
+      <p class="muted small">
+        <span id="authSwitchText">New here?</span>
+        <button type="button" class="link" id="authSwitch">Create an account</button>
+      </p>
+    </form>
+  </dialog>
+
+  <!-- ===== Upload dialog ===== -->
+  <dialog id="uploadDialog">
+    <form id="uploadForm" class="dialog-form" novalidate>
+      <h2>Upload notes</h2>
+      <label>Title
+        <input id="upTitle" type="text" maxlength="100" required placeholder="e.g. Unit 3: Process Scheduling">
+      </label>
+      <div class="row">
+        <label>Subject
+          <select id="upSubject" required></select>
+        </label>
+        <label>Semester
+          <select id="upSemester" required></select>
+        </label>
+      </div>
+      <label>Description
+        <textarea id="upDescription" rows="3" maxlength="300" placeholder="What do these notes cover?"></textarea>
+      </label>
+      <label>Tags (comma separated)
+        <input id="upTags" type="text" maxlength="100" placeholder="exam, handwritten, unit-3">
+      </label>
+      <label>File (PDF, PNG, JPG or DOCX, up to <span id="maxMb"></span> MB)
+        <input id="upFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx" required>
+      </label>
+      <p id="uploadError" class="error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="uploadCancel">Cancel</button>
+        <button type="submit" class="btn primary" id="uploadSubmit">Upload</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== View dialog ===== -->
+  <dialog id="viewDialog" class="wide">
+    <div class="dialog-form">
+      <h2 id="viewTitle"></h2>
+      <p id="viewMeta" class="muted"></p>
+      <p id="viewDescription"></p>
+      <div id="viewPreview" class="preview"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="viewClose">Close</button>
+        <button type="button" class="btn primary" id="viewDownload">Download</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
